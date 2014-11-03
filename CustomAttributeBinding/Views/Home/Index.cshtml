@@ -1,0 +1,65 @@
+﻿@model dynamic
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Bind sample</title>
+    </head>
+    <body>
+
+        <div>
+            <h2>Bind sample</h2>
+            <button id="btnBind">Click to bind</button>
+            <div id="status"></div>
+        </div>
+
+
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+        
+        <script>
+            $(document).ready(function () {
+                $("#btnBind").on("click", save);
+
+            });
+
+            function save() {
+                // Send an AJAX request
+                $.ajax({
+                    url: "@Url.Action("Save")",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        ProductName: "Name",
+                        "CustomAttributes": [
+                            {
+                                CustomAttributeId: "1",
+                                CustomAttributeValueId: "1",
+                                Value: "123",
+                                AttributeClassType: "CustomAttributeBinding.Models.CustomStringViewModel"
+                            },
+                            {
+                                CustomAttributeId: "2",
+                                CustomAttributeValueId: "2",
+                                Value: 123,
+                                AttributeClassType: "CustomAttributeBinding.Models.CustomIntegerViewModel"
+                            }
+                        ]
+                    },
+                    success: function (data) {
+                        var i, result = "";
+                        
+                        for (i = 0; i < data.attributes.length; i += 1) {
+                            result += "<li>" + data.attributes[i] + "</li>";
+                        }
+                        $('#status').html('<ul class="success">' + result + '</ul>');
+                    },
+                    error: function () {
+                        $('#status').html('<div class="error">Some error occured.</div>');
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>
+
+
